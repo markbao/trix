@@ -76,17 +76,25 @@ class Trix.Composition extends Trix.BasicObject
     document = @document
     {index, offset} = document.locationFromPosition(position)
     block = document.getBlockAtIndex(index)
+    previousCharacter = block.getPreviousCharacter(offset)
+    nextCharacter = block.getNextCharacter(offset)
 
     if block.getBlockBreakPosition() is offset
-      document = document.removeTextAtRange(range)
-      range = [position, position]
+      if previousCharacter is "\n"
+        document = document.removeTextAtRange([position - 1, position])
+      else if offset - 1 isnt 0
+        position += 1
     else
-      if block.text.getStringAtRange([offset, offset + 1]) is "\n"
+      if nextCharacter is "\n"
         range = [position - 1, position + 1]
       else if offset - 1 isnt 0
         position += 1
 
     newDocument = new Trix.Document [block.removeLastAttribute().copyWithoutText()]
+    if block.getConfig("breakOnReturn")
+      document = document.removeTextAtRange([position - 1, position])
+      range = [position - 1, position]
+
     @setDocument(document.insertDocumentAtRange(newDocument, range))
     @setSelection(position)
 
@@ -95,6 +103,9 @@ class Trix.Composition extends Trix.BasicObject
     startLocation = @document.locationFromPosition(startPosition)
     endLocation = @document.locationFromPosition(endPosition)
     block = @document.getBlockAtIndex(endLocation.index)
+    breaksOnReturn = block.breaksOnReturn()
+    previousCharacter = block.getPreviousCharacter(endLocation.offset)
+    nextCharacter = block.getNextCharacter(endLocation.offset)
 
     if block.hasAttributes()
       if block.isListItem()
@@ -109,8 +120,12 @@ class Trix.Composition extends Trix.BasicObject
       else
         if block.isEmpty()
           @removeLastBlockAttribute()
-        else if block.text.getStringAtRange([endLocation.offset - 1, endLocation.offset]) is "\n"
+        else if previousCharacter is "\n"
           @breakFormattedBlock()
+        else if breaksOnReturn and nextCharacter is "\n"
+          @breakFormattedBlock()
+        else if breaksOnReturn and previousCharacter is ""
+          @insertBlockBreak()
         else
           @insertString("\n")
     else
@@ -217,11 +232,14 @@ class Trix.Composition extends Trix.BasicObject
       @removeCurrentAttribute(attributeName)
 
   canSetCurrentAttribute: (attributeName) ->
+    isTerminalBlock = @getBlock()?.isTerminalBlock()
     switch attributeName
       when "href"
         not @selectionContainsAttachmentWithAttribute(attributeName)
-      else
+      when @getBlock()?.getLastAttribute()
         true
+      else
+        not (@getBlock()?.hasAttributes() and isTerminalBlock)
 
   setCurrentAttribute: (attributeName, value) ->
     if Trix.config.blockAttributes[attributeName]
@@ -243,8 +261,10 @@ class Trix.Composition extends Trix.BasicObject
 
   setBlockAttribute: (attributeName, value) ->
     return unless selectedRange = @getSelectedRange()
-    @setDocument(@document.applyBlockAttributeAtRange(attributeName, value, selectedRange))
-    @setSelection(selectedRange)
+    if @canSetCurrentAttribute(attributeName)
+      block = @getBlock()
+      @setDocument(@document.applyBlockAttributeAtRange(attributeName, value, selectedRange))
+      @setSelection(selectedRange)
 
   removeCurrentAttribute: (attributeName) ->
     if Trix.config.blockAttributes[attributeName]
@@ -303,6 +323,9 @@ class Trix.Composition extends Trix.BasicObject
       commonAttributes = @document.getCommonAttributesAtRange(selectedRange)
       unless objectsAreEqual(commonAttributes, @currentAttributes)
         @currentAttributes = commonAttributes
+        for blockAttribute in Object.keys(Trix.config.blockAttributes)
+          unless @canSetCurrentAttribute(blockAttribute)
+            @currentAttributes[blockAttribute] = false
         @notifyDelegateOfCurrentAttributesChange()
 
   getCurrentAttributes: ->
