@@ -5,37 +5,58 @@ trix-editor {
     -ms-user-select: none;
     user-select: none;
 
+    ::-moz-selection {
+      background: none;
+    }
+
     img {
       box-shadow: 0 0 0 2px highlight;
+    }
+
+    &.attachment.attachment-file {
+      box-shadow: 0 0 0 2px highlight;
+      border-color: transparent;
     }
   }
 
   .attachment {
+    &:hover {
+      cursor: default;
+    }
+
+    &.attachment-preview {
+      .caption:hover {
+        cursor: text;
+      }
+    }
+
     .remove {
       display: block;
       position: absolute;
-      top: -12px;
-      right: -12px;
-      width: 24px;
-      height: 24px;
-      border-radius: 24px;
-      line-height: 22px;
+      top: -0.8rem;
+      right: -0.8rem;
+      width: 1.2rem;
+      height: 1.2rem;
+      line-height: 1.2rem;
+      border-radius: 1.2rem;
       font-size: 0;
       color: black;
       text-align: center;
       text-decoration: none;
       background-color: #fff;
-      border: 1px solid #bbb;
-      box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.1);
+      border: 2px solid highlight;
+      box-shadow: -2px 2px 6px rgba(0, 0, 0, 0.12);
 
       &:after {
+        font-family:  arial, sans-serif;;
         content: '×';
-        font-size: 18px;
-        font-weight: bold;
-        opacity: 0.6;
+        font-size: 1rem;
+        opacity: 0.5;
       }
 
       &:hover {
+        border-color: #333;
+
         &:after {
           opacity: 1;
         }
@@ -45,11 +66,14 @@ trix-editor {
     .caption {
       &.caption-editing {
         textarea {
+          display: block;
           width: 100%;
           margin: 0;
           padding: 0;
-          font-size: 13px;
-          line-height: 13px;
+          font-size: inherit;
+          font-family: inherit;
+          line-height: inherit;
+          color: inherit;
           text-align: center;
           border: none;
           outline: none;
