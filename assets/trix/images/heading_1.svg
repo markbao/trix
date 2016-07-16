@@ -1,5 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" viewBox="0 0 24 24">
-<path d="M21.516 9v3h-3v6.984h-3v-6.984h-3v-3h9zM2.484 3.984h13.031v3h-5.016v12h-3v-12h-5.016v-3z"></path>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g fill="#000000">
+            <polygon points="3 5 3 18.566 5.983 18.566 5.983 12.714 11.474 12.714 11.474 18.566 14.457 18.566 14.457 5 11.474 5 11.474 10.206 5.983 10.206 5.983 5"></polygon>
+            <path d="M20.134,17.1 L20.134,8 L18.665,8 C18.6129997,8.3466684 18.5046675,8.63699883 18.34,8.871 C18.1753325,9.10500117 17.9738345,9.29349929 17.7355,9.4365 C17.4971655,9.57950071 17.2285015,9.67916639 16.9295,9.7355 C16.6304985,9.79183362 16.3206683,9.81566671 16,9.807 L16,11.198 L18.288,11.198 L18.288,17.1 L20.134,17.1 Z"></path>
+        </g>
+    </g>
 </svg>
